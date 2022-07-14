@@ -1,4 +1,4 @@
-import * as Hapi from "@hapi/hapi";
+import * as Hapi from "hapi";
 import { IDatabase } from "../database";
 import { IServerConfigurations } from "../configurations";
 

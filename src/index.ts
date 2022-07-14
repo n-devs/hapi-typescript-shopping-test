@@ -20,6 +20,7 @@ const start = async ({ config, db }) => {
     const server = await Server.init(config, db);
     await server.start();
     console.log("Server running at:", server.info.uri);
+    console.log("Server running at:", server.info.uri);
   } catch (err) {
     console.error("Error starting server: ", err.message);
     throw err;
