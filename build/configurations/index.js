@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getServerConfigs = exports.getDatabaseConfig = void 0;
 const nconf = require("nconf");
 const path = require("path");
 //Read Configurations

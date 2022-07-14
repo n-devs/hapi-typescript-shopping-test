@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.init = void 0;
 const Mongoose = require("mongoose");
 const logging_1 = require("./plugins/logging/logging");
 function init(config) {
@@ -15,8 +14,6 @@ function init(config) {
     });
     return {
         loggingModel: logging_1.LoggingModel,
-        //     taskModel: TaskModel,
-        //     userModel: UserModel
     };
 }
 exports.init = init;

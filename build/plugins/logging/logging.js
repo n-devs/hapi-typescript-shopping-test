@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LoggingModel = exports.LoggingSchema = void 0;
 const Mongoose = require("mongoose");
 exports.LoggingSchema = new Mongoose.Schema({
     userId: { type: String, required: true },
