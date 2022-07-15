@@ -1,27 +1,9 @@
-FROM mhart/alpine-node:6.9.1
-
-MAINTAINER n-devs
-
-# create a specific user to run this container
-RUN adduser -S -D user-app
-
-# add files to container
-ADD . /app
-
-# specify the working directory
-WORKDIR app
-
-RUN chmod -R 777 .
-
-# build process
+# syntax=docker/dockerfile:1
+FROM node:8-alpine
+# RUN apk add --no-cache python2 g++ make
+WORKDIR  /var/website/backend/
+COPY . .
 RUN npm install -f
 RUN npm run build
-RUN npm prune --production
-
-# run the container using a specific user
-USER user-app
-
-EXPOSE 8080
-
-# run application
-CMD ["npm", "start"]
+CMD ["node", "build/index.js"]
+EXPOSE 9000

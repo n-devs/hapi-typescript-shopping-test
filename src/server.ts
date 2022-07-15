@@ -1,62 +1,33 @@
 import * as Hapi from "hapi";
-import * as Boom from "boom";
-import { IPlugin } from "./plugins/interfaces";
-import { IServerConfigurations } from "./configurations";
-import * as Logs from "./plugins/logging";
-import * as Tasks from "./api/tasks";
-import * as Users from "./api/users";
-import { IDatabase } from "./database";
+import { config } from "dotenv";
+import Logger from './helper/logger';
 
-export async function init(
-  configs: IServerConfigurations,
-  database: IDatabase
-): Promise<Hapi.Server> {
-  try {
-    const port = process.env.PORT || configs.port;
-    const server = new Hapi.Server({
-      debug: { request: ['error'] },
-      port: port,
-      routes: {
-        cors: {
-          origin: ["*"]
-        }
+export default class Server {
+      private static _instance: Hapi.Server;
+
+      public static async start(): Promise<Hapi.Server> {
+            try {
+                  config({
+                        path: `${process.cwd()}/.env`,
+                  });
+
+                  this._instance = new Hapi.Server({
+                        port: process.env.PORT || "9000",
+                        host: process.env.HOST || '0.0.0.0'
+                  });
+
+                  await this._instance.start();
+
+                  Logger.info(
+                        `Server - Up and running at http://${process.env.HOST}:${process.env.PORT}`
+                  );
+
+                  return this._instance;
+
+            } catch (err) {
+                  throw err
+            }
       }
-    });
 
-    if (configs.routePrefix) {
-      server.realm.modifiers.route.prefix = configs.routePrefix;
-    }
-
-    //  Setup Hapi Plugins
-    const plugins: Array<string> = configs.plugins;
-    const pluginOptions = {
-      database: database,
-      serverConfigs: configs
-    };
-
-    let pluginPromises: Promise<any>[] = [];
-
-    plugins.forEach((pluginName: string) => {
-      var plugin: IPlugin = require("./plugins/" + pluginName).default();
-      console.log(
-        `Register Plugin ${plugin.info().name} v${plugin.info().version}`
-      );
-      pluginPromises.push(plugin.register(server, pluginOptions));
-    });
-
-    await Promise.all(pluginPromises);
-
-    console.log("All plugins registered successfully.");
-
-    console.log("Register Routes");
-    Logs.init(server, configs, database);
-    Tasks.init(server, configs, database);
-    Users.init(server, configs, database);
-    console.log("Routes registered sucessfully.");
-
-    return server;
-  } catch (err) {
-    console.log("Error starting server: ", err);
-    throw err;
-  }
 }
+
